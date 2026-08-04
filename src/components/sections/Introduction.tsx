@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { introStages } from '../../content/intro';
-import { onFrame, prefersReducedMotion, isCoarsePointer } from '../../lib/scroll';
+import { onFrame, prefersReducedMotion } from '../../lib/scroll';
 import { useReveal } from '../../lib/motion';
 
 /**
@@ -184,42 +184,86 @@ function StageCopy({ stage: s }: { stage: (typeof introStages)[number] }) {
 }
 
 /**
- * Mobile: no pin, no travel. Each stage is a self-contained block with the
- * asset sitting low, fading and lifting slightly as it comes into view.
+ * Mobile: one stage at a time, stepped rather than stacked.
+ *
+ * Four full blocks ran nearly four screens for what is a single argument in
+ * four beats, and the repeated copy-then-asset rhythm made it read as four
+ * unrelated sections. Stepping through them in place keeps it one unit and one
+ * screen. Copy sits above the asset — the words are the point, and a phone
+ * shows what is at the top first.
+ *
+ * Both the copy and the asset stack every stage into a single grid cell, so the
+ * block is as tall as its tallest stage and stepping never reflows the page
+ * under the reader's thumb.
  */
 function IntroStacked() {
-  return (
-    <section id="introduction" className="relative" aria-label="Introduction">
-      {introStages.map((s) => (
-        <StackedStage key={s.id} stage={s} />
-      ))}
-    </section>
-  );
-}
+  const ref = useReveal<HTMLElement>('0px 0px -12% 0px');
+  const [active, setActive] = useState(0);
+  const touchX = useRef<number | null>(null);
 
-function StackedStage({ stage: s }: { stage: (typeof introStages)[number] }) {
-  const ref = useReveal<HTMLDivElement>('0px 0px -18% 0px');
-  const [lift, setLift] = useState(0);
-
-  // A few pixels of drift only — enough to feel alive, not enough to cost.
-  useEffect(() => {
-    if (prefersReducedMotion() || !isCoarsePointer()) return;
-    const el = ref.current;
-    if (!el) return;
-    return onFrame(({ vh }) => {
-      const rect = el.getBoundingClientRect();
-      const p = (rect.top + rect.height / 2 - vh / 2) / vh;
-      setLift(Math.max(-14, Math.min(14, p * -14)));
-    });
-  }, [ref]);
+  const step = (dir: number) =>
+    setActive((i) => Math.min(COUNT - 1, Math.max(0, i + dir)));
 
   return (
-    <div ref={ref} data-inview="false" className="shell border-t border-white/[0.06] py-14">
-      <div className="reveal">
-        <StageCopy stage={s} />
+    <section
+      id="introduction"
+      ref={ref}
+      data-inview="false"
+      className="shell relative border-t border-white/[0.06] py-14"
+      aria-label="Introduction"
+      onTouchStart={(e) => {
+        touchX.current = e.touches[0].clientX;
+      }}
+      onTouchEnd={(e) => {
+        if (touchX.current === null) return;
+        const dx = e.changedTouches[0].clientX - touchX.current;
+        if (Math.abs(dx) > 45) step(dx < 0 ? 1 : -1);
+        touchX.current = null;
+      }}
+    >
+      {/* ------------------------------------------------------------ copy -- */}
+      <div className="reveal grid">
+        {introStages.map((s, i) => (
+          <div
+            key={s.id}
+            aria-hidden={i !== active}
+            className="col-start-1 row-start-1 flex flex-col transition-opacity duration-500 ease-cine"
+            style={{
+              opacity: i === active ? 1 : 0,
+              pointerEvents: i === active ? 'auto' : 'none',
+            }}
+          >
+            <StageCopy stage={s} />
+          </div>
+        ))}
       </div>
 
-      <div className="relative mt-10 flex justify-center">
+      {/* ------------------------------------------------------------ dots -- */}
+      <div className="reveal reveal-1 mt-9 flex items-center gap-2.5">
+        {introStages.map((s, i) => (
+          <button
+            key={s.id}
+            onClick={() => setActive(i)}
+            aria-label={`Stage ${i + 1}: ${s.kicker}`}
+            aria-current={i === active}
+            className="h-6 shrink-0 py-[11px]"
+            style={{ width: i === active ? 34 : 18 }}
+          >
+            <span
+              className="block h-px w-full transition-colors duration-500 ease-cine"
+              style={{
+                background: i === active ? '#2F5EF0' : 'rgba(255,255,255,0.18)',
+              }}
+            />
+          </button>
+        ))}
+        <span className="ml-2 font-display text-[0.58rem] font-600 tracking-wide2 text-chalk-faint">
+          {String(active + 1).padStart(2, '0')} / {String(COUNT).padStart(2, '0')}
+        </span>
+      </div>
+
+      {/* ----------------------------------------------------------- asset -- */}
+      <div className="relative mt-8 grid justify-items-center">
         <div
           className="pointer-events-none absolute inset-0 blur-[60px]"
           style={{
@@ -227,17 +271,23 @@ function StackedStage({ stage: s }: { stage: (typeof introStages)[number] }) {
               'radial-gradient(closest-side, rgba(47,94,240,0.20) 0%, transparent 70%)',
           }}
         />
-        <img
-          src={s.asset}
-          alt=""
-          width={620}
-          height={620}
-          loading="lazy"
-          decoding="async"
-          className="reveal reveal-2 w-[62%] max-w-[280px] object-contain will-change-transform"
-          style={{ transform: `translate3d(0, ${lift.toFixed(1)}px, 0)` }}
-        />
+        {introStages.map((s, i) => (
+          <img
+            key={s.id}
+            src={s.asset}
+            alt=""
+            width={620}
+            height={620}
+            loading={i === 0 ? 'eager' : 'lazy'}
+            decoding="async"
+            className="col-start-1 row-start-1 w-[62%] max-w-[280px] object-contain transition-all duration-600 ease-cine"
+            style={{
+              opacity: i === active ? 1 : 0,
+              transform: i === active ? 'scale(1)' : 'scale(0.94)',
+            }}
+          />
+        ))}
       </div>
-    </div>
+    </section>
   );
 }

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import Section from '../Section';
 import { pricing, carePlans } from '../../content/site';
@@ -10,11 +9,10 @@ import { scrollToId } from '../../lib/scroll';
  * A comparison rail, not four stacked brochures. Each tier is a column with a
  * shared baseline so prices line up and the ladder is readable at a glance; the
  * featured tier is lifted with a cobalt edge rather than a filled block.
- * Care plans sit behind a toggle so they never compete with the build packages.
+ * Care plans sit below the build packages, always visible — they are part of
+ * the cost of the engagement, so hiding them behind a toggle understated it.
  */
 export default function Pricing() {
-  const [showCare, setShowCare] = useState(false);
-
   return (
     <Section
       id="pricing"
@@ -120,72 +118,53 @@ export default function Pricing() {
 
       {/* ---------------------------------------------------- care plans -- */}
       <div className="mt-16 border-t border-white/[0.08] pt-10">
-        <button
-          onClick={() => setShowCare((v) => !v)}
-          aria-expanded={showCare}
-          className="flex w-full items-center justify-between gap-6 text-left"
-        >
-          <span>
-            <span className="font-display text-xl font-700 tracking-tighter text-chalk">
-              {carePlans.heading}
-            </span>
-            <span className="ml-4 font-display text-[0.6rem] font-600 uppercase tracking-wide2 text-chalk-ghost">
-              Optional · from $29/mo
-            </span>
+        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
+          <h3 className="font-display text-xl font-700 tracking-tighter text-chalk">
+            {carePlans.heading}
+          </h3>
+          <span className="font-display text-[0.6rem] font-600 uppercase tracking-wide2 text-chalk-ghost">
+            Required · from $29/mo
           </span>
-          <span
-            className="relative block h-3 w-3 shrink-0 transition-transform duration-600 ease-cine"
-            style={{ transform: showCare ? 'rotate(135deg)' : 'none' }}
-            aria-hidden
-          >
-            <span className="absolute left-0 top-1/2 h-px w-3 -translate-y-1/2 bg-chalk" />
-            <span className="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 bg-chalk" />
-          </span>
-        </button>
+        </div>
 
-        <div
-          className="grid transition-[grid-template-rows] duration-600 ease-cine"
-          style={{ gridTemplateRows: showCare ? '1fr' : '0fr' }}
-        >
-          <div className="overflow-hidden">
-            <div className="grid gap-3 pt-8 sm:grid-cols-2 xl:grid-cols-4">
-              {carePlans.plans.map((p) => (
-                <article
-                  key={p.name}
-                  className={`panel p-5 ${p.featured ? 'border-cobalt/40' : ''}`}
-                >
-                  <div className="flex items-baseline justify-between">
-                    <h4 className="font-display text-[0.88rem] font-700 tracking-tight text-chalk">
-                      {p.name}
-                    </h4>
-                    {p.featured && (
-                      <span className="font-display text-[0.46rem] font-700 uppercase tracking-wide2 text-cobalt-light">
-                        Best value
-                      </span>
-                    )}
-                  </div>
-                  <p className="mt-2 font-display text-xl font-800 tracking-tightest text-chalk">
-                    {p.price}
-                    <span className="ml-1 font-display text-[0.52rem] font-600 uppercase tracking-wide2 text-chalk-ghost">
-                      /month
-                    </span>
-                  </p>
-                  <ul className="mt-4 space-y-1.5">
-                    {'inheritsFrom' in p && p.inheritsFrom && (
-                      <li className="font-display text-[0.55rem] font-700 uppercase tracking-wide2 text-cobalt-light/80">
-                        Everything in {p.inheritsFrom}, plus
-                      </li>
-                    )}
-                    {p.features.map((f) => (
-                      <li key={f} className="text-[0.76rem] leading-snug text-chalk-muted">
-                        {f}
-                      </li>
-                    ))}
-                  </ul>
-                </article>
-              ))}
-            </div>
-          </div>
+        {/* Two-up from the smallest width. Stacked, four full-width cards
+            pushed the tiers a screen and a half down the page on a phone. */}
+        <div className="grid grid-cols-2 gap-3 pt-8 xl:grid-cols-4">
+          {carePlans.plans.map((p) => (
+            <article
+              key={p.name}
+              className={`panel p-5 ${p.featured ? 'border-cobalt/40' : ''}`}
+            >
+              <div className="flex items-baseline justify-between gap-2">
+                <h4 className="font-display text-[0.88rem] font-700 tracking-tight text-chalk">
+                  {p.name}
+                </h4>
+                {p.featured && (
+                  <span className="font-display text-[0.46rem] font-700 uppercase tracking-wide2 text-cobalt-light">
+                    Best value
+                  </span>
+                )}
+              </div>
+              <p className="mt-2 font-display text-xl font-800 tracking-tightest text-chalk">
+                {p.price}
+                <span className="ml-1 font-display text-[0.52rem] font-600 uppercase tracking-wide2 text-chalk-ghost">
+                  /month
+                </span>
+              </p>
+              <ul className="mt-4 space-y-1.5">
+                {'inheritsFrom' in p && p.inheritsFrom && (
+                  <li className="font-display text-[0.55rem] font-700 uppercase tracking-wide2 text-cobalt-light/80">
+                    Everything in {p.inheritsFrom}, plus
+                  </li>
+                )}
+                {p.features.map((f) => (
+                  <li key={f} className="text-[0.76rem] leading-snug text-chalk-muted">
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            </article>
+          ))}
         </div>
       </div>
     </Section>

@@ -450,8 +450,9 @@ export const faq = {
     {
       q: 'Do you provide support after launch?',
       a:
-        'Yes. Optional monthly plans are available for hosting, updates, ' +
-        'monitoring, analytics, local SEO, and Google Business Profile support.',
+        'Yes. Every project includes a monthly plan covering hosting, updates, ' +
+        'monitoring, analytics, local SEO, and Google Business Profile support. ' +
+        'Plans start at $29/mo and the tier is agreed with your quote.',
     },
   ],
 } as const;

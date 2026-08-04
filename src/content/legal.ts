@@ -369,9 +369,11 @@ export const termsPage: LegalDoc = {
         {
           label: 'Monthly plans',
           text:
-            'Care plans are optional and cancellable. They bill monthly until ' +
-            'you cancel, and cancelling stops future billing rather than ' +
-            'refunding the month in progress.',
+            'Every project runs on one of the monthly care plans, and the tier ' +
+            'is agreed in writing with your quote. Plans bill monthly from ' +
+            'launch. Cancelling stops future billing rather than refunding the ' +
+            'month in progress, and ends the hosting, monitoring and support ' +
+            'that plan provides.',
         },
       ],
     },
@@ -542,9 +544,11 @@ export const termsPage: LegalDoc = {
         {
           label: 'Care plans',
           text:
-            'Cancel any time. Cancellation takes effect at the end of the ' +
-            'current billing month, and we will hand over what you need to move ' +
-            'hosting elsewhere.',
+            'A care plan runs for as long as we host and maintain the site. You ' +
+            'may cancel, effective at the end of the current billing month; that ' +
+            'ends our hosting and support, and we will hand over what you need to ' +
+            'move elsewhere. Ownership of the site itself is unaffected — once it ' +
+            'is paid for it stays yours.',
         },
       ],
     },

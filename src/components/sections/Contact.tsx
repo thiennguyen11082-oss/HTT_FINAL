@@ -74,13 +74,16 @@ export default function Contact() {
             <h2 className="display-2 reveal reveal-1 ink-gradient">{contact.heading}</h2>
             <p className="lede reveal reveal-2 mt-6">{contact.sub}</p>
 
-            <dl className="reveal reveal-3 mt-12 space-y-7 border-t border-white/[0.08] pt-9">
-              <div>
+            {/* Phone and service area pair up on a phone — stacked, three
+                full-width rows ran most of a screen for six words of content.
+                The desktop column is narrow, so it goes back to a stack there. */}
+            <dl className="reveal reveal-3 mt-8 grid grid-cols-2 gap-x-6 gap-y-5 border-t border-white/[0.08] pt-7 md:mt-12 md:gap-y-7 md:pt-9 lg:grid-cols-1">
+              <div className="col-span-2 lg:col-span-1">
                 <dt className={label}>Email</dt>
-                <dd className="mt-2">
+                <dd className="mt-1.5">
                   <a
                     href={`mailto:${site.email}`}
-                    className="font-display text-base font-700 tracking-tight text-chalk transition-colors duration-400 hover:text-cobalt-light"
+                    className="font-display text-[0.95rem] font-700 tracking-tight text-chalk transition-colors duration-400 hover:text-cobalt-light md:text-base"
                   >
                     {site.email}
                   </a>
@@ -88,10 +91,10 @@ export default function Contact() {
               </div>
               <div>
                 <dt className={label}>Phone</dt>
-                <dd className="mt-2">
+                <dd className="mt-1.5">
                   <a
                     href={`tel:${site.phoneHref}`}
-                    className="font-display text-base font-700 tracking-tight text-chalk transition-colors duration-400 hover:text-cobalt-light"
+                    className="font-display text-[0.95rem] font-700 tracking-tight text-chalk transition-colors duration-400 hover:text-cobalt-light md:text-base"
                   >
                     {site.phone}
                   </a>
@@ -99,13 +102,13 @@ export default function Contact() {
               </div>
               <div>
                 <dt className={label}>Service area</dt>
-                <dd className="mt-2 font-display text-base font-700 tracking-tight text-chalk">
+                <dd className="mt-1.5 font-display text-[0.95rem] font-700 tracking-tight text-chalk md:text-base">
                   {site.serviceArea}
                 </dd>
               </div>
             </dl>
 
-            <div className="reveal reveal-4 mt-9 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-white/[0.08] pt-7">
+            <div className="reveal reveal-4 mt-7 flex flex-wrap items-center gap-x-6 gap-y-3 border-t border-white/[0.08] pt-6 md:mt-9 md:pt-7">
               <a
                 href={site.social.instagram}
                 target="_blank"

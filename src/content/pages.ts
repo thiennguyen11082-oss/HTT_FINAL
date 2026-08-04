@@ -359,8 +359,9 @@ export const pricingPage: DetailPage = {
       kicker: 'Monthly',
       title: 'What happens after launch',
       body:
-        'Every plan is optional and cancellable. Hosting has to live somewhere, but ' +
-        'you are not obliged to keep it with us.',
+        'Every project runs on one of these plans. A live site needs hosting, ' +
+        'monitoring and someone answering when it breaks, so it is part of the ' +
+        'engagement rather than an upsell you decline at the end.',
       facets: [
         {
           label: 'Hosting — $29/mo',
@@ -616,9 +617,10 @@ export const faqPage = {
         {
           q: 'Do I have to take a monthly plan?',
           a:
-            'No. Monthly plans are optional and cancellable. Hosting does have to live ' +
-            'somewhere, and you are welcome to host elsewhere — we will hand over what ' +
-            'you need.',
+            'Yes. Every project runs on one of the monthly plans, starting at $29. A ' +
+            'live site needs hosting, monitoring and someone to answer when something ' +
+            'breaks, so it is quoted as part of the engagement rather than sold to you ' +
+            'afterwards. Which tier you need is agreed in writing with your quote.',
         },
         {
           q: 'Do you take payment up front?',
@@ -714,7 +716,7 @@ export const faqPage = {
           a:
             'Every project includes a support window — 14 days on Growth, 30 on Lead ' +
             'Engine — for anything that needs adjusting once it is live. Beyond that, ' +
-            'optional monthly plans cover hosting, updates, monitoring, analytics, local ' +
+            'your monthly plan covers hosting, updates, monitoring, analytics, local ' +
             'SEO and Google Business Profile management.',
         },
         {
