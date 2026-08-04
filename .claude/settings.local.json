@@ -1,0 +1,15 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:httmarketing.com)",
+      "Read(//c/Users/thien/Downloads/**)",
+      "Bash(ffprobe -v error -show_entries stream=width,height,duration,codec_name,r_frame_rate -show_entries format=duration,size -of default=noprint_wrappers=1 \"Đang ghi 2026-08-03 080630.mp4\")",
+      "Read(//c/Program Files/**)",
+      "Bash(python -c \"print\\('py ok'\\)\")",
+      "mcp__f23eaa5d-3271-4134-8c8e-c945ab5a9553__balance",
+      "PowerShell($s=New-Object -ComObject Shell.Application; $f=$s.Namespace\\(\"C:\\\\Users\\\\thien\\\\Downloads\"\\); $i=$f.ParseName\\(\"Đang ghi 2026-08-03 080630.mp4\"\\); foreach\\($n in 27,28,314,315,316\\){ \"{0} = {1}\" -f $f.GetDetailsOf\\($null,$n\\), $f.GetDetailsOf\\($i,$n\\) })",
+      "PowerShell($p=\"C:\\\\Users\\\\HTT Marketing Agency\\\\Vaughan Plumber\"; if\\(Test-Path $p\\){ Get-ChildItem $p -Force | Select-Object -First 25 Name; \"---PKG---\"; if\\(Test-Path \"$p\\\\package.json\"\\){ Get-Content \"$p\\\\package.json\" -Raw } } else { \"not found\" })",
+      "PowerShell($s=New-Object -ComObject Shell.Application; $f=$s.Namespace\\(\"C:\\\\Users\\\\thien\\\\Downloads\"\\); $i=$f.ParseName\\(\"Đang ghi 2026-08-03 080630.mp4\"\\); 0..340 | ForEach-Object { $n=$f.GetDetailsOf\\($null,$_\\); $v=$f.GetDetailsOf\\($i,$_\\); if\\($v -and $n -match 'Frame|Width|Height|Dimension|Length|Data rate|Total'\\){ \"{0}: {1}\" -f $n,$v } })"
+    ]
+  }
+}
