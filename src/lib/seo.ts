@@ -96,4 +96,16 @@ export const seo = {
       'Start a project, report a problem or ask a question. Free consultation, no obligation. Phoenix, Arizona and beyond.',
     path: '/contact',
   },
+  privacy: {
+    title: 'Privacy Policy — HTT Marketing Agency',
+    description:
+      'No analytics, no tracking pixels, no cookies. What the contact form collects, who can see it, how long we keep it, and how to have it deleted.',
+    path: '/privacy',
+  },
+  terms: {
+    title: 'Terms of Use — HTT Marketing Agency',
+    description:
+      'Quotes, payment, revisions, ownership and what we can honestly promise. The terms for using this site and for hiring us to build one.',
+    path: '/terms',
+  },
 } as const;

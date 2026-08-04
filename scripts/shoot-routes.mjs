@@ -26,7 +26,10 @@ const browser = await puppeteer.launch({
   args: ['--hide-scrollbars', '--enable-unsafe-swiftshader', '--use-gl=angle'],
 });
 
-const routes = ['services', 'pricing', 'process', 'projects', 'faq', 'contact'];
+const routes = [
+  'services', 'pricing', 'process', 'projects', 'faq', 'contact',
+  'privacy', 'terms',
+];
 
 for (const r of routes) {
   const page = await browser.newPage();

@@ -25,8 +25,9 @@ export default function PageShell({
   eyebrow: string;
   title: string;
   lede: string;
-  /** Home-page section id this page expands on. */
-  backTo: string;
+  /** Home-page section id this page expands on. Omitted by pages that expand
+   *  nothing — the legal pages — which link to the top of home instead. */
+  backTo?: string;
   seo: { title: string; description: string; path: string };
   children: ReactNode;
 }) {
@@ -58,13 +59,13 @@ export default function PageShell({
                 <p className="lede reveal reveal-2 mt-7">{lede}</p>
 
                 <Link
-                  to={`/#${backTo}`}
+                  to={backTo ? `/#${backTo}` : '/'}
                   className="reveal reveal-3 group mt-10 inline-flex items-center gap-2.5 font-display text-[0.62rem] font-700 uppercase tracking-wide2 text-chalk-faint transition-colors duration-400 hover:text-chalk"
                 >
                   <span className="inline-block transition-transform duration-600 ease-cine group-hover:-translate-x-1.5">
                     ←
                   </span>
-                  Back to overview
+                  {backTo ? 'Back to overview' : 'Back to home'}
                 </Link>
               </div>
             </div>

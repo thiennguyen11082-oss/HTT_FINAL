@@ -13,6 +13,8 @@ const ProcessPage = lazy(() => import('./routes/ProcessPage'));
 const ProjectsPage = lazy(() => import('./routes/ProjectsPage'));
 const FaqPage = lazy(() => import('./routes/FaqPage'));
 const ContactPage = lazy(() => import('./routes/ContactPage'));
+const PrivacyPage = lazy(() => import('./routes/PrivacyPage'));
+const TermsPage = lazy(() => import('./routes/TermsPage'));
 const NotFound = lazy(() => import('./routes/NotFound'));
 
 function RouteChrome() {
@@ -55,6 +57,8 @@ function Shell() {
           <Route path="/projects" element={<ProjectsPage />} />
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/contact" element={<ContactPage />} />
+          <Route path="/privacy" element={<PrivacyPage />} />
+          <Route path="/terms" element={<TermsPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Suspense>
