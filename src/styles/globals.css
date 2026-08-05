@@ -85,9 +85,23 @@
     @apply h-px w-8 bg-cobalt;
   }
 
+  /*
+   * Hero only. The cap is set by the longest line, "obvious choice.", which is
+   * held on one line by whitespace-nowrap.
+   *
+   * The shell stops growing at 1520px and the type column at 42rem, but the
+   * font did not — it kept scaling on vw to 6.5rem, so past roughly 1500px the
+   * line outgrew a column that had stopped growing and the section's
+   * overflow-hidden sheared the end off. 5.8rem is the largest size that fits
+   * 42rem exactly, so the cap sits a step below it — six pixels of slack is
+   * under one percent of the line, and Archivo arriving from Google Fonts can
+   * render fractionally wider than it measures here. The vw step is eased to
+   * 6.2 so the 1024-1280 band, where the grid halves the column, keeps a
+   * margin instead of landing on the edge.
+   */
   .display-1 {
     @apply font-display font-800 tracking-tightest;
-    font-size: clamp(2.6rem, 6.4vw, 6.5rem);
+    font-size: clamp(2.6rem, 6.2vw, 5.7rem);
     line-height: 0.92;
   }
 
