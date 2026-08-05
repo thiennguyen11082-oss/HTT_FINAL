@@ -32,7 +32,24 @@ export async function sendEnquiry(
       body: JSON.stringify(data),
     });
 
-    if (res.ok) return 'sent';
+    if (res.ok) {
+      /*
+       * A 200 is not on its own proof the function ran. If the SPA rewrite ever
+       * matches /api/contact — which is exactly what a catch-all rewrite does
+       * when it is not filesystem-aware — the request resolves to index.html
+       * with a 200, res.ok is true, and every enquiry is reported as sent while
+       * silently going nowhere. So the body has to actually be our JSON.
+       */
+      const isJson = (res.headers.get('content-type') ?? '').includes('application/json');
+      if (isJson) {
+        const body = (await res.json().catch(() => null)) as { ok?: boolean } | null;
+        if (body?.ok) return 'sent';
+      }
+
+      // Reached the server but not the function. Never claim this was sent.
+      mailtoFallback(data, subject);
+      return 'fallback';
+    }
 
     // 503 means the mailbox credentials are not set yet; 404 means the function
     // is not deployed. Both are our problem, not the visitor's — hand them a

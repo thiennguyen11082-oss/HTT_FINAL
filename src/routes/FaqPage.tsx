@@ -22,44 +22,44 @@ export default function FaqPage() {
           {p.groups.map((group, gi) => (
             <section key={group.title}>
               <div className="mb-8 flex items-center gap-4">
-                <h2 className="font-display text-[0.7rem] font-700 uppercase tracking-wide3 text-ink-faint">
+                <h2 className="font-display text-[0.7rem] font-700 uppercase tracking-wide3 text-chalk-faint">
                   {group.title}
                 </h2>
-                <span className="h-px flex-1 bg-ink/12" />
+                <span className="h-px flex-1 bg-white/12" />
               </div>
 
-              <div className="border-t border-ink/12">
+              <div className="border-t border-white/12">
                 {group.items.map((item, ii) => {
                   const key = `${gi}:${ii}`;
                   const isOpen = open === key;
                   return (
-                    <div key={item.q} className="border-b border-ink/12">
+                    <div key={item.q} className="border-b border-white/12">
                       <h3>
                         <button
                           onClick={() => setOpen(isOpen ? null : key)}
                           aria-expanded={isOpen}
                           className="flex w-full items-start justify-between gap-6 py-6 text-left"
                         >
-                          <span className="font-display text-lg font-700 tracking-tight text-ink md:text-xl">
+                          <span className="font-display text-lg font-700 tracking-tight text-chalk md:text-xl">
                             {item.q}
                           </span>
                           <span
-                            className="relative mt-2 block h-3 w-3 shrink-0 transition-transform duration-500 ease-elite"
+                            className="relative mt-2 block h-3 w-3 shrink-0 transition-transform duration-500 ease-cine"
                             style={{ transform: isOpen ? 'rotate(135deg)' : 'none' }}
                             aria-hidden
                           >
-                            <span className="absolute left-0 top-1/2 h-px w-3 -translate-y-1/2 bg-ink" />
-                            <span className="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 bg-ink" />
+                            <span className="absolute left-0 top-1/2 h-px w-3 -translate-y-1/2 bg-chalk" />
+                            <span className="absolute left-1/2 top-0 h-3 w-px -translate-x-1/2 bg-chalk" />
                           </span>
                         </button>
                       </h3>
 
                       <div
-                        className="grid transition-[grid-template-rows] duration-500 ease-elite"
+                        className="grid transition-[grid-template-rows] duration-500 ease-cine"
                         style={{ gridTemplateRows: isOpen ? '1fr' : '0fr' }}
                       >
                         <div className="overflow-hidden">
-                          <p className="max-w-[68ch] pb-7 leading-relaxed text-ink-muted">
+                          <p className="max-w-[68ch] pb-7 leading-relaxed text-chalk-muted">
                             {item.a}
                           </p>
                         </div>

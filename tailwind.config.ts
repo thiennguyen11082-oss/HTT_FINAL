@@ -35,6 +35,13 @@ export default {
           deep: '#1A3AAE',
           ink: '#0A1533',
         },
+        /* Confirmation only — never decoration. A form that has actually sent
+           is the one moment the palette is allowed to leave cobalt. */
+        success: {
+          DEFAULT: '#12A870',
+          bright: '#1BC583',
+          light: '#6EE7B7',
+        },
       },
       fontFamily: {
         display: ['"Archivo"', 'Inter', 'system-ui', 'sans-serif'],

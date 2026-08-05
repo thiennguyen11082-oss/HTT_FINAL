@@ -40,9 +40,9 @@ export default function Contact() {
 
   const buttonLabel =
     state === 'sending'
-      ? 'Sending…'
+      ? 'Sending request…'
       : state === 'sent'
-        ? 'Enquiry sent'
+        ? 'Request sent'
         : state === 'fallback'
           ? 'Opening your email…'
           : contact.submitLabel;
@@ -199,8 +199,10 @@ export default function Contact() {
               <div className="sm:col-span-2">
                 <button
                   type="submit"
-                  disabled={state === 'sending'}
-                  className="btn btn-primary w-full disabled:opacity-70 sm:w-auto sm:px-12"
+                  disabled={state === 'sending' || state === 'sent'}
+                  className={`btn w-full sm:w-auto sm:px-12 ${
+                    state === 'sent' ? 'btn-sent' : 'btn-primary'
+                  } disabled:cursor-not-allowed`}
                 >
                   {buttonLabel}
                 </button>
@@ -210,7 +212,7 @@ export default function Contact() {
                 </p>
 
                 {state === 'sent' && (
-                  <p className="mt-4 text-[0.82rem] text-cobalt-light">
+                  <p className="mt-4 text-[0.82rem] text-success-light">
                     Thanks — that landed in our inbox. We reply within one business day.
                   </p>
                 )}

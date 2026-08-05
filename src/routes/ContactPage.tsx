@@ -1,46 +1,61 @@
 import { useState } from 'react';
 import PageShell from '../components/PageShell';
 import { seo } from '../lib/seo';
+import { sendEnquiry, type SendState } from '../lib/contact';
 import { contactPage as p } from '../content/pages';
 import { contact, site } from '../content/site';
 
 const field =
-  'w-full border-b border-ink/20 bg-transparent py-3 text-[0.95rem] text-ink placeholder:text-ink-hair transition-colors duration-300 focus:border-ink';
+  'w-full border-b border-white/20 bg-transparent py-3 text-[0.95rem] text-chalk placeholder:text-chalk-ghost transition-colors duration-300 focus:border-cobalt';
 
-const label = 'block font-display text-[0.6rem] font-600 uppercase tracking-wide2 text-ink-faint';
+const label = 'block font-display text-[0.6rem] font-600 uppercase tracking-wide2 text-chalk-faint';
 
 export default function ContactPage() {
   const [purpose, setPurpose] = useState('consultation');
-  const [sent, setSent] = useState(false);
+  const [state, setState] = useState<SendState>('idle');
 
   // Project-shaped enquiries ask about budget; complaints and support do not.
   const isProjectEnquiry = purpose === 'consultation' || purpose === 'interested';
   const isIssue = purpose === 'problem' || purpose === 'complaint' || purpose === 'support';
 
-  const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+  /**
+   * Posts to the mail endpoint, exactly as the home page form does.
+   *
+   * This previously built a mailto: and handed the enquiry to the visitor's own
+   * mail client, so nothing reached the inbox unless they then pressed send in
+   * whatever application opened — and on a phone with no mail account set up,
+   * nothing happened at all. sendEnquiry still falls back to mailto: by itself
+   * if the endpoint is missing or unconfigured.
+   */
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
-    if (data.get('company_fax')) return; // honeypot
+    const form = e.currentTarget;
+    const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
 
-    const lines = [
-      `Purpose: ${data.get('purpose')}`,
-      `Customer status: ${data.get('status')}`,
-      `Name: ${data.get('name')}`,
-      `Email: ${data.get('email')}`,
-      `Phone: ${data.get('phone') || '�'}`,
-      `Business name: ${data.get('business') || '�'}`,
-      `Business type: ${data.get('type') || '�'}`,
-      `Current website: ${data.get('website') || '�'}`,
-    ];
-    if (isProjectEnquiry) lines.push(`Budget: ${data.get('budget') || '�'}`);
-    if (isIssue) lines.push(`Urgency: ${data.get('urgency') || '�'}`);
-    lines.push('', String(data.get('message')));
+    if (data.company_fax) return; // honeypot
 
-    window.location.href = `mailto:${site.email}?subject=${encodeURIComponent(
-      `${data.get('purpose')} � ${data.get('business') || data.get('name')}`
-    )}&body=${encodeURIComponent(lines.join('\n'))}`;
-    setSent(true);
+    setState('sending');
+    const result = await sendEnquiry(
+      data,
+      `${data.purpose} — ${data.business || data.name}`
+    );
+    setState(result);
+
+    if (result === 'sent') {
+      form.reset();
+      // The purpose pills are controlled, so form.reset() cannot restore them.
+      setPurpose('consultation');
+    }
   };
+
+  const buttonLabel =
+    state === 'sending'
+      ? 'Sending request…'
+      : state === 'sent'
+        ? 'Request sent'
+        : state === 'fallback'
+          ? 'Opening your email…'
+          : 'Send message';
 
   return (
     <PageShell
@@ -53,7 +68,7 @@ export default function ContactPage() {
     >
       <div className="shell py-20 md:py-28">
         <div className="grid gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-          {/* Direct lines first � plenty of people would rather not use a form. */}
+          {/* Direct lines first — plenty of people would rather not use a form. */}
           <aside>
             <dl className="space-y-8">
               <div>
@@ -61,7 +76,7 @@ export default function ContactPage() {
                 <dd className="mt-2">
                   <a
                     href={`mailto:${site.email}`}
-                    className="font-display text-lg font-700 tracking-tight text-ink underline-offset-4 hover:underline"
+                    className="font-display text-lg font-700 tracking-tight text-chalk underline-offset-4 hover:underline"
                   >
                     {site.email}
                   </a>
@@ -72,7 +87,7 @@ export default function ContactPage() {
                 <dd className="mt-2">
                   <a
                     href={`tel:${site.phoneHref}`}
-                    className="font-display text-lg font-700 tracking-tight text-ink underline-offset-4 hover:underline"
+                    className="font-display text-lg font-700 tracking-tight text-chalk underline-offset-4 hover:underline"
                   >
                     {site.phone}
                   </a>
@@ -80,29 +95,29 @@ export default function ContactPage() {
               </div>
               <div>
                 <dt className={label}>Service area</dt>
-                <dd className="mt-2 font-display text-lg font-700 tracking-tight text-ink">
+                <dd className="mt-2 font-display text-lg font-700 tracking-tight text-chalk">
                   {site.serviceArea}
                 </dd>
               </div>
             </dl>
 
-            <div className="mt-12 space-y-6 border-t border-ink/12 pt-8">
+            <div className="mt-12 space-y-6 border-t border-white/12 pt-8">
               {p.reassurance.map((r) => (
                 <div key={r.title}>
-                  <h3 className="font-display text-[0.68rem] font-700 uppercase tracking-wide2 text-ink">
+                  <h3 className="font-display text-[0.68rem] font-700 uppercase tracking-wide2 text-chalk">
                     {r.title}
                   </h3>
-                  <p className="mt-1.5 text-[0.85rem] leading-relaxed text-ink-muted">{r.text}</p>
+                  <p className="mt-1.5 text-[0.85rem] leading-relaxed text-chalk-muted">{r.text}</p>
                 </div>
               ))}
             </div>
 
-            <div className="mt-10 flex gap-4 border-t border-ink/12 pt-8">
+            <div className="mt-10 flex gap-4 border-t border-white/12 pt-8">
               <a
                 href={site.social.instagram}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-display text-[0.65rem] font-600 uppercase tracking-wide2 text-ink-faint transition-colors hover:text-ink"
+                className="font-display text-[0.65rem] font-600 uppercase tracking-wide2 text-chalk-faint transition-colors hover:text-chalk"
               >
                 Instagram
               </a>
@@ -110,7 +125,7 @@ export default function ContactPage() {
                 href={site.social.tiktok}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="font-display text-[0.65rem] font-600 uppercase tracking-wide2 text-ink-faint transition-colors hover:text-ink"
+                className="font-display text-[0.65rem] font-600 uppercase tracking-wide2 text-chalk-faint transition-colors hover:text-chalk"
               >
                 TikTok
               </a>
@@ -142,7 +157,7 @@ export default function ContactPage() {
                       className="peer sr-only"
                       required
                     />
-                    <span className="block rounded-full border border-ink/20 px-4 py-2 font-display text-[0.66rem] font-600 uppercase tracking-wide2 text-ink-muted transition-colors duration-300 peer-checked:border-ink peer-checked:bg-ink peer-checked:text-ambient">
+                    <span className="block rounded-full border border-white/20 px-4 py-2 font-display text-[0.66rem] font-600 uppercase tracking-wide2 text-chalk-muted transition-colors duration-300 peer-checked:border-cobalt peer-checked:bg-cobalt peer-checked:text-white">
                       {o.label}
                     </span>
                   </label>
@@ -163,7 +178,7 @@ export default function ContactPage() {
                       className="peer sr-only"
                       required
                     />
-                    <span className="block rounded-full border border-ink/20 px-4 py-2 font-display text-[0.66rem] font-600 uppercase tracking-wide2 text-ink-muted transition-colors duration-300 peer-checked:border-ink peer-checked:bg-ink peer-checked:text-ambient">
+                    <span className="block rounded-full border border-white/20 px-4 py-2 font-display text-[0.66rem] font-600 uppercase tracking-wide2 text-chalk-muted transition-colors duration-300 peer-checked:border-cobalt peer-checked:bg-cobalt peer-checked:text-white">
                       {o.label}
                     </span>
                   </label>
@@ -294,11 +309,34 @@ export default function ContactPage() {
               <div className="sm:col-span-2">
                 <button
                   type="submit"
-                  className="w-full rounded-full bg-ink py-4 font-display text-[0.72rem] font-700 uppercase tracking-wide2 text-ambient transition-transform duration-300 ease-elite hover:scale-[1.01] sm:w-auto sm:px-10"
+                  disabled={state === 'sending' || state === 'sent'}
+                  className={`btn w-full sm:w-auto sm:px-12 ${
+                    state === 'sent' ? 'btn-sent' : 'btn-primary'
+                  } disabled:cursor-not-allowed`}
                 >
-                  {sent ? 'Opening your email⬦' : 'Send message'}
+                  {buttonLabel}
                 </button>
-                <p className="mt-5 max-w-[46ch] text-[0.72rem] leading-relaxed text-ink-faint">
+
+                <p aria-live="polite" className="sr-only">
+                  {state === 'sent' ? 'Your request has been sent.' : ''}
+                </p>
+
+                {state === 'sent' && (
+                  <p className="mt-4 text-[0.82rem] text-success-light">
+                    Thanks — that landed in our inbox. We reply within one business day.
+                  </p>
+                )}
+                {state === 'error' && (
+                  <p className="mt-4 text-[0.82rem] text-chalk-soft">
+                    That did not go through. Email us directly at{' '}
+                    <a href={`mailto:${site.email}`} className="underline">
+                      {site.email}
+                    </a>
+                    .
+                  </p>
+                )}
+
+                <p className="mt-5 max-w-[46ch] text-[0.72rem] leading-relaxed text-chalk-faint">
                   {contact.privacy}
                 </p>
               </div>

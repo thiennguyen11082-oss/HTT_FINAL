@@ -153,6 +153,13 @@
     transform: translateY(-2px);
   }
 
+  /* Terminal state for a submitted form. No hover lift — there is nothing
+     left to press, and a button that still reacts invites a second send. */
+  .btn-sent {
+    @apply bg-success text-white;
+    box-shadow: 0 16px 50px -20px rgba(18, 168, 112, 0.8);
+  }
+
   .btn-ghost {
     @apply border border-white/15 text-chalk;
   }
