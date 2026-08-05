@@ -151,7 +151,7 @@ export const pricing = {
       name: 'Starter',
       promise: 'Look established, fast.',
       price: '$499',
-      priceNote: 'fixed price',
+      priceNote: 'one-time',
       timeline: '7–10 business days',
       forWho: 'New businesses that need to exist online, properly, this month.',
       features: [
@@ -170,7 +170,7 @@ export const pricing = {
       name: 'Growth',
       promise: 'Get found. Get calls.',
       price: '$999',
-      priceNote: 'fixed price',
+      priceNote: 'one-time',
       timeline: 'about 14 business days',
       forWho:
         'Businesses ready to show up in local search instead of just having a URL.',
@@ -192,7 +192,7 @@ export const pricing = {
       name: 'Lead Engine',
       promise: 'The site books the work.',
       price: '$1,799',
-      priceNote: 'fixed price',
+      priceNote: 'one-time',
       timeline: 'custom project timeline',
       forWho:
         'Established businesses that want the website earning its keep every day.',
