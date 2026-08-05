@@ -169,7 +169,7 @@ export default function Contact() {
               </div>
               <div>
                 <label className={label} htmlFor="type">Business type *</label>
-                <select id="type" name="type" required className={`${field} [&>option]:bg-obsidian-raised`} defaultValue="">
+                <select id="type" name="type" required className={field} defaultValue="">
                   <option value="" disabled>Select one</option>
                   {contact.businessTypes.map((t) => (
                     <option key={t} value={t}>{t}</option>
@@ -178,7 +178,7 @@ export default function Contact() {
               </div>
               <div>
                 <label className={label} htmlFor="budget">Estimated budget *</label>
-                <select id="budget" name="budget" required className={`${field} [&>option]:bg-obsidian-raised`} defaultValue="">
+                <select id="budget" name="budget" required className={field} defaultValue="">
                   <option value="" disabled>Select one</option>
                   {contact.budgets.map((b) => (
                     <option key={b} value={b}>{b}</option>

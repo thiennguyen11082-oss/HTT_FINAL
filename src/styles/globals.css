@@ -34,6 +34,22 @@
     color: #fff;
   }
 
+  /*
+   * The dropdown list is drawn by the OS, not the page, and it does not
+   * inherit the dark surface — on Windows the popup is white. Without an
+   * explicit colour the options inherit the select's own text-chalk and
+   * render near-white on white, i.e. invisible until highlighted. Both
+   * halves have to be stated together; setting one without the other just
+   * moves the problem.
+   */
+  select option {
+    @apply bg-obsidian-raised text-chalk;
+  }
+
+  select option:disabled {
+    @apply text-chalk-faint;
+  }
+
   h1, h2, h3, h4 {
     @apply font-display;
     text-wrap: balance;
