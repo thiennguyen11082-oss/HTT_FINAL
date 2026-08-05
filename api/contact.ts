@@ -50,37 +50,92 @@ const escapeHtml = (s: string) =>
 const headerSafe = (s: string) =>
   s.replace(/[\r\n]+/g, ' ').replace(/["<>]/g, '').trim().slice(0, 120);
 
-export default async function handler(req: Request): Promise<Response> {
+/**
+ * Minimal shapes for Vercel's Node.js request and response.
+ *
+ * Typed structurally rather than importing @vercel/node, which is not a
+ * dependency here. `body` is pre-parsed by the platform when the request
+ * carries a JSON content-type; readBody covers the case where it is not.
+ */
+type Req = {
+  method?: string;
+  body?: unknown;
+  headers: Record<string, string | string[] | undefined>;
+  on(event: string, cb: (chunk?: unknown) => void): void;
+};
+
+type Res = {
+  statusCode: number;
+  setHeader(k: string, v: string): void;
+  end(chunk?: string): void;
+};
+
+const send = (res: Res, status: number, payload: unknown) => {
+  res.statusCode = status;
+  res.setHeader('content-type', 'application/json; charset=utf-8');
+  res.end(JSON.stringify(payload));
+};
+
+/** Falls back to reading the stream when the platform has not parsed a body. */
+function readBody(req: Req): Promise<string> {
+  return new Promise((resolve, reject) => {
+    let raw = '';
+    req.on('data', (chunk) => {
+      raw += String(chunk);
+    });
+    req.on('end', () => resolve(raw));
+    req.on('error', reject);
+  });
+}
+
+/*
+ * Node signature, not the Web `(Request) => Response` one.
+ *
+ * nodemailer speaks SMTP over a TCP socket, so this has to run on the Node
+ * runtime rather than Edge — and the Node runtime invokes the handler with
+ * (req, res) and waits for res.end(). Returning a Response object there
+ * satisfies nothing: the request hangs until the function times out, which
+ * looks from the browser exactly like a form that does nothing.
+ */
+export default async function handler(req: Req, res: Res): Promise<void> {
   if (req.method !== 'POST') {
-    return new Response('Method not allowed', { status: 405 });
+    res.statusCode = 405;
+    res.setHeader('content-type', 'text/plain; charset=utf-8');
+    res.end('Method not allowed');
+    return;
   }
 
   let body: Payload;
   try {
-    body = (await req.json()) as Payload;
+    if (req.body && typeof req.body === 'object') {
+      body = req.body as Payload;
+    } else {
+      const raw = typeof req.body === 'string' ? req.body : await readBody(req);
+      body = JSON.parse(raw) as Payload;
+    }
   } catch {
-    return Response.json({ ok: false, error: 'Invalid body' }, { status: 400 });
+    return send(res, 400, { ok: false, error: 'Invalid body' });
   }
 
   // Honeypot: real people never fill a hidden field. Return success so bots
   // cannot tell they were caught.
-  if (body.company_fax) return Response.json({ ok: true });
+  if (body.company_fax) return send(res, 200, { ok: true });
 
   const name = (body.name ?? '').trim();
   const email = (body.email ?? '').trim();
   const message = (body.message ?? '').trim();
 
   if (!name || !email || !message) {
-    return Response.json({ ok: false, error: 'Missing required fields' }, { status: 400 });
+    return send(res, 400, { ok: false, error: 'Missing required fields' });
   }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-    return Response.json({ ok: false, error: 'Invalid email' }, { status: 400 });
+    return send(res, 400, { ok: false, error: 'Invalid email' });
   }
 
   if (!process.env.SMTP_USER || !process.env.SMTP_PASS) {
     // Surfaced so the front end can fall back to a mailto: rather than
     // silently swallowing the enquiry.
-    return Response.json({ ok: false, error: 'Mail not configured' }, { status: 503 });
+    return send(res, 503, { ok: false, error: 'Mail not configured' });
   }
 
   const rows = FIELDS.filter((k) => body[k]).map(
@@ -111,12 +166,12 @@ export default async function handler(req: Request): Promise<Response> {
         `</div>`,
     });
 
-    return Response.json({ ok: true });
+    return send(res, 200, { ok: true });
   } catch (err) {
     // Message and code only. A full nodemailer error carries the SMTP
     // conversation, which on an auth failure echoes the mailbox back into logs.
     const e = err as { message?: string; code?: string };
     console.error('contact send failed', { code: e.code, message: e.message });
-    return Response.json({ ok: false, error: 'Send failed' }, { status: 502 });
+    return send(res, 502, { ok: false, error: 'Send failed' });
   }
 }

@@ -33,14 +33,56 @@ const { default: handler } = await import(
   pathToFileURL(resolve(process.cwd(), 'api/contact.ts')).href
 );
 
-const post = (body, method = 'POST') =>
-  handler(
-    new Request('http://localhost/api/contact', {
-      method,
-      headers: { 'content-type': 'application/json' },
-      body: method === 'POST' ? JSON.stringify(body) : undefined,
-    })
-  );
+/**
+ * Invokes the handler the way Vercel's Node runtime does: (req, res), and it is
+ * only finished when res.end() is called.
+ *
+ * The timeout is the point. A handler that returns a value but never ends the
+ * response looks fine to a test that inspects its return value, and hangs
+ * forever in production. That is exactly how the Web-signature version passed
+ * every local check while timing out on every real request.
+ */
+function post(body, method = 'POST', timeoutMs = 20000) {
+  const req = {
+    method,
+    headers: { 'content-type': 'application/json' },
+    body: method === 'POST' ? body : undefined,
+    on(event, cb) {
+      if (event === 'data' && method === 'POST') cb(JSON.stringify(body));
+      if (event === 'end') cb();
+    },
+  };
+
+  return new Promise((resolve, reject) => {
+    const timer = setTimeout(
+      () => reject(new Error(`handler never called res.end() within ${timeoutMs}ms`)),
+      timeoutMs
+    );
+
+    const res = {
+      statusCode: 200,
+      headers: {},
+      setHeader(k, v) {
+        this.headers[k.toLowerCase()] = v;
+      },
+      end(chunk) {
+        clearTimeout(timer);
+        let parsed = null;
+        try {
+          parsed = chunk ? JSON.parse(chunk) : null;
+        } catch {
+          parsed = chunk ?? null;
+        }
+        resolve({ status: this.statusCode, body: parsed, headers: this.headers });
+      },
+    };
+
+    Promise.resolve(handler(req, res)).catch((err) => {
+      clearTimeout(timer);
+      reject(err);
+    });
+  });
+}
 
 let failures = 0;
 const expect = (label, cond, detail = '') => {
@@ -91,7 +133,7 @@ const res = await post({
     `If this is in your inbox, the deployed form will work. Sent ${stamp}.`,
 });
 
-const body = await res.json().catch(() => null);
+const body = res.body;
 
 if (res.status === 200 && body?.ok) {
   ok('handler returned 200 {ok:true}');
