@@ -5,10 +5,11 @@ import { sendEnquiry, type SendState } from '../lib/contact';
 import { contactPage as p } from '../content/pages';
 import { contact, site } from '../content/site';
 
+/* Same contrast reasoning as the home form — see Contact.tsx. */
 const field =
-  'w-full border-b border-white/20 bg-transparent py-3 text-[0.95rem] text-chalk placeholder:text-chalk-ghost transition-colors duration-300 focus:border-cobalt';
+  'w-full border-b border-white/20 bg-transparent py-3 text-[0.95rem] text-chalk placeholder:text-chalk-faint transition-colors duration-300 focus:border-cobalt';
 
-const label = 'block font-display text-[0.6rem] font-600 uppercase tracking-wide2 text-chalk-faint';
+const label = 'block font-display text-[0.6rem] font-600 uppercase tracking-wide2 text-chalk-muted';
 
 export default function ContactPage() {
   const [purpose, setPurpose] = useState('consultation');
@@ -349,7 +350,7 @@ export default function ContactPage() {
                   </p>
                 )}
 
-                <p className="mt-5 max-w-[46ch] text-[0.72rem] leading-relaxed text-chalk-faint">
+                <p className="mt-5 max-w-[46ch] text-[0.72rem] leading-relaxed text-chalk-muted">
                   {contact.privacy}
                 </p>
               </div>

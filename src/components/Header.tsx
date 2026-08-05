@@ -28,9 +28,42 @@ export default function Header() {
       setActive(pathname.slice(1));
       return;
     }
+    /*
+     * Tracking what is visible, rather than reacting to whichever entry fired
+     * last. The previous version only ever set `active` on an intersection and
+     * never cleared it, so scrolling back up to the hero — where no section is
+     * in the band — left the last section you passed still underlined.
+     *
+     * When more than one section overlaps the band, the one nearest its top
+     * wins, so the choice does not depend on callback ordering.
+     */
+    const visible = new Set<string>();
+
     const io = new IntersectionObserver(
       (entries) => {
-        for (const e of entries) if (e.isIntersecting) setActive(e.target.id);
+        for (const e of entries) {
+          if (e.isIntersecting) visible.add(e.target.id);
+          else visible.delete(e.target.id);
+        }
+
+        if (visible.size === 0) {
+          setActive('');
+          return;
+        }
+
+        const bandTop = window.innerHeight * 0.35;
+        let best = '';
+        let bestDistance = Infinity;
+        for (const id of visible) {
+          const el = document.getElementById(id);
+          if (!el) continue;
+          const distance = Math.abs(el.getBoundingClientRect().top - bandTop);
+          if (distance < bestDistance) {
+            bestDistance = distance;
+            best = id;
+          }
+        }
+        setActive(best);
       },
       { rootMargin: '-35% 0px -60% 0px', threshold: 0 }
     );

@@ -397,8 +397,9 @@ export const pricingPage: DetailPage = {
       kicker: 'Fine print',
       title: 'What is not included',
       body:
-        'These prices are starting prices, and we would rather say so up front than ' +
-        'surprise you at invoice.',
+        'Each package price is fixed for everything listed in it. These sit ' +
+        'outside that, and we would rather say so up front than surprise you ' +
+        'at invoice.',
       points: [
         'Domain registration and renewal',
         'Premium software licences and subscriptions',
@@ -601,10 +602,11 @@ export const faqPage = {
         {
           q: 'Are the displayed prices final?',
           a:
-            'They are starting prices. Additional pages, premium software, special ' +
-            'integrations, advanced booking systems, custom features and rush delivery ' +
-            'can increase the final figure. You get a fixed quote before any work ' +
-            'starts, so the number you agree is the number you pay.',
+            'Yes. Each package price is fixed for everything listed in it, so the ' +
+            'number you see is the number you pay. Anything outside a package — ' +
+            'extra pages, premium software, a special integration, rush delivery — ' +
+            'is quoted separately and only begins once you have agreed it in ' +
+            'writing. Nothing is added to an invoice you have not seen coming.',
         },
         {
           q: 'What is not included in the price?',

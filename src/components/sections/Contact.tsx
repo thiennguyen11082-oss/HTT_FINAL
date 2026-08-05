@@ -4,11 +4,18 @@ import { useReveal } from '../../lib/motion';
 import { sendEnquiry, type SendState } from '../../lib/contact';
 import { contact, site } from '../../content/site';
 
+/*
+ * chalk-ghost measured 1.89:1 against the panel — below WCAG's 4.5:1 for body
+ * text and barely legible in practice. Labels and the privacy note are real
+ * content and move to chalk-muted (6.82:1). Placeholders go to chalk-faint
+ * (3.54:1) rather than the same step, so an empty field still reads as empty
+ * next to entered text set in full chalk.
+ */
 const field =
-  'w-full border-b border-white/12 bg-transparent py-3 text-[0.92rem] text-chalk placeholder:text-chalk-ghost transition-colors duration-400 focus:border-cobalt';
+  'w-full border-b border-white/12 bg-transparent py-3 text-[0.92rem] text-chalk placeholder:text-chalk-faint transition-colors duration-400 focus:border-cobalt';
 
 const label =
-  'block font-display text-[0.55rem] font-600 uppercase tracking-wide2 text-chalk-ghost';
+  'block font-display text-[0.55rem] font-600 uppercase tracking-wide2 text-chalk-muted';
 
 /**
  * Contact.
@@ -231,7 +238,7 @@ export default function Contact() {
                   </p>
                 )}
 
-                <p className="mt-5 max-w-[48ch] text-[0.7rem] leading-relaxed text-chalk-ghost">
+                <p className="mt-5 max-w-[48ch] text-[0.7rem] leading-relaxed text-chalk-muted">
                   {contact.privacy}
                 </p>
               </div>

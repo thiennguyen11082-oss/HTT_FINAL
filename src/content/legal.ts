@@ -307,9 +307,9 @@ export const termsPage: LegalDoc = {
       kicker: '02',
       title: 'Quotes and pricing',
       body:
-        'Prices shown on this site are starting prices, and this is stated ' +
-        'wherever they appear. The figure that binds either of us is the one on ' +
-        'your written quote.',
+        'Each package price shown on this site is fixed for the scope listed ' +
+        'in that package. The figure that binds either of us is the one on your ' +
+        'written quote.',
       facets: [
         {
           label: 'Fixed quote before work starts',

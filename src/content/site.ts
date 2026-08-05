@@ -151,7 +151,7 @@ export const pricing = {
       name: 'Starter',
       promise: 'Look established, fast.',
       price: '$499',
-      priceNote: 'starting',
+      priceNote: 'fixed price',
       timeline: '7–10 business days',
       forWho: 'New businesses that need to exist online, properly, this month.',
       features: [
@@ -170,7 +170,7 @@ export const pricing = {
       name: 'Growth',
       promise: 'Get found. Get calls.',
       price: '$999',
-      priceNote: 'starting',
+      priceNote: 'fixed price',
       timeline: 'about 14 business days',
       forWho:
         'Businesses ready to show up in local search instead of just having a URL.',
@@ -192,7 +192,7 @@ export const pricing = {
       name: 'Lead Engine',
       promise: 'The site books the work.',
       price: '$1,799',
-      priceNote: 'starting',
+      priceNote: 'fixed price',
       timeline: 'custom project timeline',
       forWho:
         'Established businesses that want the website earning its keep every day.',
@@ -431,9 +431,10 @@ export const faq = {
     {
       q: 'Are the displayed prices final?',
       a:
-        'The displayed prices are starting prices. Additional pages, premium ' +
-        'software, special integrations, advanced booking systems, custom ' +
-        'features, and urgent delivery may increase the final price.',
+        'Yes. Each package price is fixed for everything listed in it — the ' +
+        'number you see is the number you pay. Work outside a package, such as ' +
+        'extra pages or a custom feature, is quoted separately and only starts ' +
+        'once you have agreed it in writing.',
     },
     {
       q: 'Will the website work on mobile phones?',

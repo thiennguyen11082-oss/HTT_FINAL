@@ -118,14 +118,13 @@ export default function Pricing() {
 
       {/* ---------------------------------------------------- care plans -- */}
       <div className="mt-16 border-t border-white/[0.08] pt-10">
-        <div className="flex flex-wrap items-baseline gap-x-4 gap-y-1">
-          <h3 className="font-display text-xl font-700 tracking-tighter text-chalk">
-            {carePlans.heading}
-          </h3>
-          <span className="font-display text-[0.6rem] font-600 uppercase tracking-wide2 text-chalk-ghost">
-            Required · from $29/mo
-          </span>
-        </div>
+        <h3 className="font-display text-xl font-700 tracking-tighter text-chalk">
+          {carePlans.heading}
+        </h3>
+        <p className="mt-2 max-w-[60ch] text-[0.82rem] leading-relaxed text-chalk-muted">
+          Managed hosting is required for HTT-maintained websites, starting at
+          $29/month.
+        </p>
 
         {/* Two-up from the smallest width. Stacked, four full-width cards
             pushed the tiers a screen and a half down the page on a phone. */}
