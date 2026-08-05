@@ -32,8 +32,13 @@ export default function ContactPage() {
     const form = e.currentTarget;
     const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
 
-    if (data.company_fax) return; // honeypot
-
+    /*
+     * The honeypot is deliberately NOT short-circuited here. Bailing out in the
+     * client leaves the button dead with no state change, so a real visitor
+     * whose browser autofilled the trap gets a form that does nothing at all
+     * and no way to tell why. The server already answers a tripped honeypot
+     * with {ok:true} and drops it, so let it decide and always give feedback.
+     */
     setState('sending');
     const result = await sendEnquiry(
       data,
@@ -133,13 +138,21 @@ export default function ContactPage() {
           </aside>
 
           <form onSubmit={onSubmit}>
+            {/*
+              * Honeypot. `hidden` rather than a zero-sized visible box: Chrome
+              * skips fields it does not render, but happily autofills a 0x0
+              * opacity-0 one — and the old name, company_fax, matched its
+              * address-profile heuristic for a fax number, so autofilling a
+              * real visitor's details tripped the trap and killed the form.
+              * autocomplete="off" does not prevent this on its own.
+              */}
             <input
               type="text"
-              name="company_fax"
+              name="contact_ref"
               tabIndex={-1}
               autoComplete="off"
               aria-hidden="true"
-              className="absolute h-0 w-0 opacity-0"
+              className="hidden"
             />
 
             {/* Purpose drives which fields below are relevant. */}

@@ -102,8 +102,11 @@ expect('malformed email rejected', r.status === 400, `got ${r.status}`);
 r = await post({ ...bare, message: '' });
 expect('missing message rejected', r.status === 400, `got ${r.status}`);
 
+r = await post({ ...bare, contact_ref: 'bot' });
+expect('honeypot accepted silently', r.status === 200 && r.body?.ok, `got ${r.status}`);
+
 r = await post({ ...bare, company_fax: 'bot' });
-expect('honeypot accepted silently', r.status === 200, `got ${r.status}`);
+expect('legacy honeypot still honoured', r.status === 200 && r.body?.ok, `got ${r.status}`);
 
 r = await post(null, 'GET');
 expect('GET rejected', r.status === 405, `got ${r.status}`);

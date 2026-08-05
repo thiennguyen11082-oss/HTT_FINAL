@@ -26,9 +26,12 @@ export default function Contact() {
     const form = e.currentTarget;
     const data = Object.fromEntries(new FormData(form)) as Record<string, string>;
 
-    // Honeypot: real people never fill a hidden field.
-    if (data.company_fax) return;
-
+    /*
+     * The honeypot is deliberately NOT short-circuited here — bailing out in
+     * the client leaves the button dead with no state change. The server
+     * answers a tripped honeypot with {ok:true} and drops it, so let it decide
+     * and always give the visitor feedback.
+     */
     setState('sending');
     const result = await sendEnquiry(
       data,
@@ -137,13 +140,15 @@ export default function Contact() {
           {/* ------------------------------------------------------ form -- */}
           <div className="panel reveal reveal-2 p-7 md:p-10">
             <form onSubmit={onSubmit} className="grid gap-6 sm:grid-cols-2">
+              {/* Honeypot — `hidden`, not a zero-sized visible box, or Chrome
+                  autofills it along with the real fields. See ContactPage. */}
               <input
                 type="text"
-                name="company_fax"
+                name="contact_ref"
                 tabIndex={-1}
                 autoComplete="off"
                 aria-hidden="true"
-                className="absolute h-0 w-0 opacity-0"
+                className="hidden"
               />
 
               <div>

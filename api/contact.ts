@@ -118,8 +118,9 @@ export default async function handler(req: Req, res: Res): Promise<void> {
   }
 
   // Honeypot: real people never fill a hidden field. Return success so bots
-  // cannot tell they were caught.
-  if (body.company_fax) return send(res, 200, { ok: true });
+  // cannot tell they were caught. company_fax is the previous name, still
+  // honoured so a cached bundle keeps working through a deploy.
+  if (body.contact_ref || body.company_fax) return send(res, 200, { ok: true });
 
   const name = (body.name ?? '').trim();
   const email = (body.email ?? '').trim();

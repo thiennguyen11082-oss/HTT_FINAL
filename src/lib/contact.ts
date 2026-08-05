@@ -12,7 +12,7 @@ const TO = 'contact@httmarketing.com';
 
 function mailtoFallback(data: Record<string, string>, subject: string) {
   const body = Object.entries(data)
-    .filter(([k, v]) => v && k !== 'company_fax')
+    .filter(([k, v]) => v && k !== 'contact_ref' && k !== 'company_fax')
     .map(([k, v]) => `${k}: ${v}`)
     .join('\n');
 
